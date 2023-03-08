@@ -1,0 +1,37 @@
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+# Load the Iris dataset
+iris = load_iris()
+
+# Convert the dataset to a pandas DataFrame
+df = pd.DataFrame(data=np.c_[iris['data'], iris['target']],
+                  columns=iris['feature_names'] + ['target'])
+df['target'] = df['target'].astype(int)
+
+# Display the first 5 rows of the DataFrame
+print(df.head())
+# Scatter plot of sepal length versus sepal width
+plt.scatter(df['sepal length (cm)'], df['sepal width (cm)'], c=df['target'])
+plt.xlabel('sepal length (cm)')
+plt.ylabel('sepal width (cm)')
+plt.title('Scatter plot of Iris dataset')
+plt.show()
+# Extract the features that we will use for clustering
+X = df.iloc[:, :-1]
+
+# Apply K-means clustering with 3 clusters
+kmeans = KMeans(n_clusters=3, random_state=42).fit(X)
+
+# Add the predicted clusters to the DataFrame
+df['predicted'] = kmeans.labels_
+
+# Scatter plot of sepal length versus sepal width, with predicted clusters
+plt.scatter(df['sepal length (cm)'], df['sepal width (cm)'], c=df['predicted'])
+plt.xlabel('sepal length (cm)')
+plt.ylabel('sepal width (cm)')
+plt.title('Scatter plot of Iris dataset with predicted clusters')
+plt.show()
